@@ -9,7 +9,7 @@ import (
 func Connect() (*sql.DB, error) {
 	dbx, err := sql.Open(
 		"mysql",
-		"user:password@tcp(127.0.0.1:3306)/wpool",
+		"user:12345@tcp(127.0.0.1:3306)/PRODUCTS",
 	)
 
 	if err != nil {
