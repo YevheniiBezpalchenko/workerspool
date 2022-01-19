@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 	"log"
-	models "workerspool/models"
+	models "workerspool/models/parser"
 )
 
 type RestDB struct {

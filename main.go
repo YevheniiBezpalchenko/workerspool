@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 	"workerspool/db"
-	"workerspool/models"
+	"workerspool/models/parser"
 	repo "workerspool/repository"
 	"workerspool/workerpool"
 )
@@ -43,8 +43,8 @@ func (w TestWorker) Do(data interface{}, i int) {
 func (w TestWorker) Stop() {
 
 }
-func readJson(fname string) models.Rest {
-	var rest models.Rest
+func readJson(fname string) parser.Rest {
+	var rest parser.Rest
 	jsonFile, err := os.Open("data/" + fname)
 	if err != nil {
 		fmt.Println(err)
@@ -55,7 +55,7 @@ func readJson(fname string) models.Rest {
 
 	return rest
 }
-func dbWrite(rest *models.Rest) {
+func dbWrite(rest *parser.Rest) {
 	db, _ := db.Connect()
 	Rdb := repo.RestDB{}
 	Rdb.Conn(db)

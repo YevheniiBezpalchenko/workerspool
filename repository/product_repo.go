@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 	"log"
-	"workerspool/models"
+	"workerspool/models/parser"
 )
 
 type ProductDB struct {
@@ -14,7 +14,7 @@ func (r *ProductDB) Conn(conn *sql.DB) {
 	r.conn = conn
 }
 
-func (db *ProductDB) Create(menu models.Menu) (id int64, err error) {
+func (db *ProductDB) Create(menu parser.Menu) (id int64, err error) {
 	stmt, err := db.conn.Prepare("INSERT TO Product(name) VALUES(?)")
 	if err != nil {
 		log.Fatal(err)

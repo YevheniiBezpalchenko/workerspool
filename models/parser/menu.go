@@ -1,4 +1,4 @@
-package models
+package parser
 
 type Menu struct {
 	Id          int      `json:"id"`

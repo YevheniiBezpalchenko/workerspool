@@ -1,4 +1,4 @@
-package models
+package parser
 
 type Rest struct {
 	Id           int    `json:"id"`
