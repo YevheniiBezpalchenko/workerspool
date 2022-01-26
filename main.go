@@ -1,70 +1,71 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
+	"net/http"
+	"strconv"
 	"workerspool/db"
 	"workerspool/models/parser"
-	repo "workerspool/repository"
-	"workerspool/workerpool"
+	"workerspool/repository"
 )
 
 func main() {
-
-	wc := func() worker_pool.Worker {
-		return TestWorker{}
+	suppliers := getSuppliers()
+	conn, err := db.Connect()
+	if err != nil {
+		log.Fatal(err)
 	}
-	wpool := worker_pool.NewPool(4, wc)
-	wpool.DataSource = make(chan interface{})
+}
+func do(conn *sql.DB, supplier parser.Suppliers) {
+	var r repository.RestDB
+	r.Conn(conn)
+	r.FillSupplier(&supplier)
 
-	go wpool.Run()
-
-	files, err := ioutil.ReadDir("./data/")
+}
+func getSuppliers() []parser.Suppliers {
+	res, err := http.Get("http://foodapi.true-tech.php.nixdev.co/suppliers")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, file := range files {
-		//wpool.DataSource <- readJson(file.Name())
-		fmt.Println(readJson(file.Name()))
-	}
-	wpool.Stop()
+	var data []parser.Suppliers
+	suplMap := make(map[string][]parser.Suppliers)
+
+	json.NewDecoder(res.Body).Decode(&suplMap)
+	data = suplMap["suppliers"]
+	return data
 }
-
-type TestWorker struct{}
-
-func (w TestWorker) Do(data interface{}, i int) {
-	//fmt.Printf("Goroutine number %d, is running. Input %s \n", i, rest)
-
-}
-func (w TestWorker) Stop() {
-
-}
-func readJson(fname string) parser.Rest {
-	var rest parser.Rest
-	jsonFile, err := os.Open("data/" + fname)
+func getSupplierMenu(Id int) []parser.Menu {
+	url := "http://foodapi.true-tech.php.nixdev.co/suppliers/" + strconv.Itoa(Id) + "/menu"
+	fmt.Println(url)
+	res, err := http.Get(url)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	fmt.Println("Successfull")
-	defer jsonFile.Close()
-	json.NewDecoder(jsonFile).Decode(&rest)
 
-	return rest
+	var data []parser.Menu
+	menuMap := make(map[string][]parser.Menu)
+
+	json.NewDecoder(res.Body).Decode(&menuMap)
+	data = menuMap["menu"]
+	fmt.Println(data)
+	return data
 }
-func dbWrite(rest *parser.Rest) {
-	db, _ := db.Connect()
-	Rdb := repo.RestDB{}
-	Rdb.Conn(db)
-	Rdb.Create(rest)
-	Pdb := repo.ProductDB{}
-	Pdb.Conn(db)
-	for _, menu := range rest.Menu {
-		Pdb.Create(menu)
 
+func getOneSupplierMenu(Supplier_Id int, Menu_Id int) parser.Menu {
+	url := "http://foodapi.true-tech.php.nixdev.co/suppliers/" + strconv.Itoa(Supplier_Id) + "/menu/" + strconv.Itoa(Menu_Id)
+	fmt.Println(url)
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
 	}
 
+	var data parser.Menu
+
+	json.NewDecoder(res.Body).Decode(&data)
+	fmt.Println(data)
+	return data
 }

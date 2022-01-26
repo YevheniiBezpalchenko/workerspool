@@ -1,6 +1,6 @@
 package models
 
 type Products struct {
-	Id   int
-	Name string
+	Name   string
+	Api_id int
 }

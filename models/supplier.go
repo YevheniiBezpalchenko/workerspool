@@ -1,9 +1,9 @@
 package models
 
-type Restdb struct {
-	Id      int
+type Supplier struct {
 	Name    string
 	Image   string
 	Opening string
 	Closing string
+	Api_id  int
 }

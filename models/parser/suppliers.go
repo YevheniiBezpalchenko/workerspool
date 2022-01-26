@@ -1,6 +1,6 @@
 package parser
 
-type Rest struct {
+type Suppliers struct {
 	Id           int    `json:"id"`
 	Name         string `json:"name"`
 	Type         string `json:"type"`
@@ -9,5 +9,4 @@ type Rest struct {
 		Opening string `json:"opening"`
 		Closing string `json:"closing"`
 	} `json:"workingHours"`
-	Menu []Menu `json:"menu"`
 }
